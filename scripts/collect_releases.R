@@ -37,7 +37,7 @@ if (length(releases_raw) > 0) {
         releases     = releases
     )
 
-    existing <- load_json(data_path("release_downloads.json"))
+    existing <- load_snapshots(data_path("release_downloads.json"))
     updated  <- append_snapshot(existing, snapshot)
     save_json(updated, data_path("release_downloads.json"))
 

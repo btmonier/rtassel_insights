@@ -40,9 +40,14 @@ merge_by_key <- function(existing, new_data, key) {
     combined
 }
 
+load_snapshots <- function(path) {
+    if (!file.exists(path)) return(list())
+    fromJSON(path, simplifyDataFrame = FALSE)
+}
+
 #' Append a snapshot to an existing list of snapshots.
 append_snapshot <- function(existing, snapshot) {
-    if (is.null(existing)) return(list(snapshot))
+    if (is.null(existing) || length(existing) == 0) return(list(snapshot))
     c(existing, list(snapshot))
 }
 
