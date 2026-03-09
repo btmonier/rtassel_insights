@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 export default defineConfig({
-  base: "/rtassel_insights/",
+  base: "/",
   plugins: [
     viteStaticCopy({
       targets: [
