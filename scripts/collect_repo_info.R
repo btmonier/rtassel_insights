@@ -6,7 +6,11 @@ cli_h1("Collecting repository info for {OWNER}/{REPO}")
 # --- Repository overview snapshot --------------------------------------------
 
 cli_h2("Repository overview")
-repo_meta <- gh("GET /repos/{owner}/{repo}", owner = OWNER, repo = REPO)
+repo_meta <- safe_gh("GET /repos/{owner}/{repo}", owner = OWNER, repo = REPO)
+
+if (is.null(repo_meta)) {
+    cli_abort("Cannot access repository metadata -- check your GITHUB_TOKEN")
+}
 
 snapshot <- data.frame(
     collected_at      = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),

@@ -2,11 +2,17 @@ source(file.path("scripts", "helpers.R"))
 
 cli_h1("Collecting release data for {OWNER}/{REPO}")
 
-releases_raw <- gh(
+releases_raw <- safe_gh(
     "GET /repos/{owner}/{repo}/releases",
     owner = OWNER, repo = REPO,
     .limit = Inf
 )
+
+if (is.null(releases_raw)) {
+    cli_alert_danger("Cannot access releases endpoint")
+    cli_alert_success("Release collection complete (with errors)")
+    quit(status = 0)
+}
 
 if (length(releases_raw) > 0) {
     releases <- lapply(releases_raw, function(rel) {
