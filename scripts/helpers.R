@@ -69,26 +69,3 @@ safe_gh <- function(endpoint, ...) {
         }
     )
 }
-
-#' GET wrapper that retries when GitHub stats endpoints return empty (HTTP 202).
-#' GitHub returns 202 with an empty body while computing statistics in the
-#' background. The gh package parses this as a length-0 list with no status
-#' code exposed, so we detect it by checking for an empty response.
-gh_get <- function(endpoint, ..., max_retries = 5) {
-    for (i in seq_len(max_retries)) {
-        response <- safe_gh(
-            endpoint, ...,
-            .send_headers = c("Accept" = "application/vnd.github.v3+json")
-        )
-
-        if (is.null(response)) return(NULL)
-        if (length(response) > 0) return(response)
-
-        wait <- min(2^i, 30)
-        cli_alert_info("Statistics being computed, retrying in {wait}s ({i}/{max_retries})...")
-        Sys.sleep(wait)
-    }
-
-    cli_alert_warning("Statistics endpoint still empty after {max_retries} retries")
-    NULL
-}
