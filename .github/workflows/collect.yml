@@ -1,0 +1,43 @@
+name: Collect rTASSEL GitHub Insights
+
+on:
+  schedule:
+    # Twice weekly (Mon + Thu at 06:00 UTC) to capture traffic within 14-day window
+    - cron: "0 6 * * 1,4"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pixi
+        uses: prefix-dev/setup-pixi@v0.8.1
+
+      - name: Collect traffic data
+        run: pixi run collect-traffic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Collect repository info
+        run: pixi run collect-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Collect release data
+        run: pixi run collect-releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Commit and push data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "data: update rTASSEL insights [automated]"
+          file_pattern: "data/*.json"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"

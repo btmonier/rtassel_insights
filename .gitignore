@@ -1,0 +1,14 @@
+# pixi
+.pixi/
+pixi.lock
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+.Renviron
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,16 @@
+[workspace]
+name = "rtassel_insights"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "osx-64", "linux-64"]
+
+[dependencies]
+r-base = ">=4.3"
+r-gh = "*"
+r-jsonlite = "*"
+r-cli = "*"
+
+[tasks]
+collect-traffic = "Rscript scripts/collect_traffic.R"
+collect-repo = "Rscript scripts/collect_repo_info.R"
+collect-releases = "Rscript scripts/collect_releases.R"
+collect-all = { depends-on = ["collect-traffic", "collect-repo", "collect-releases"] }
