@@ -2,10 +2,8 @@ name: Collect rTASSEL GitHub Insights
 
 on:
   schedule:
-    # 6 AM CST (winter)
-    - cron: "0 12 * * *"
-    # 6 AM CDT (summer)
-    - cron: "0 11 * * *"
+    - cron: "0 11 * * *" # 6 AM CDT (summer)
+    - cron: "0 12 * * *" # 6 AM CST (winter)
   workflow_dispatch:
 
 permissions:
@@ -18,7 +16,20 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-time:
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.timecheck.outputs.should_run }}
+    steps:
+      - name: Check if 6 AM Central
+        id: timecheck
+        run: |
+          HOUR=$(TZ='America/Chicago' date +%H)
+          echo "should_run=$( [ "$HOUR" = "06" ] && echo 'true' || echo 'false' )" >> "$GITHUB_OUTPUT"
+
   collect:
+    needs: check-time
+    if: needs.check-time.outputs.should-run == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
