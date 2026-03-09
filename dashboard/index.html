@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>rTASSEL Insights</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=call_split,content_copy,error_outline,star,trending_up,visibility" />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header id="dashboard-header"></header>
+    <div id="summary-stats" class="summary-row"></div>
+    <main class="dashboard-grid">
+      <section class="card card-wide" id="views-section">
+        <div class="card-header">
+          <h2>Page Views</h2>
+          <div class="period-pills" id="views-pills">
+            <button class="period-pill active" data-period="1w">1W</button>
+            <button class="period-pill" data-period="2w">2W</button>
+            <button class="period-pill" data-period="1m">1M</button>
+            <button class="period-pill" data-period="6m">6M</button>
+            <button class="period-pill" data-period="ytd">YTD</button>
+            <button class="period-pill" data-period="1y">1Y</button>
+            <button class="period-pill" data-period="5y">5Y</button>
+            <button class="period-pill" data-period="max">MAX</button>
+          </div>
+        </div>
+        <div class="chart-pair">
+          <div>
+            <h3 class="chart-subtitle">Daily</h3>
+            <div class="chart-container chart-container--wide">
+              <canvas id="views-daily-canvas"></canvas>
+            </div>
+          </div>
+          <div>
+            <h3 class="chart-subtitle">Cumulative</h3>
+            <div class="chart-container chart-container--wide">
+              <canvas id="views-cumulative-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card card-wide" id="clones-section">
+        <div class="card-header">
+          <h2>Git Clones</h2>
+          <div class="period-pills" id="clones-pills">
+            <button class="period-pill active" data-period="1w">1W</button>
+            <button class="period-pill" data-period="2w">2W</button>
+            <button class="period-pill" data-period="1m">1M</button>
+            <button class="period-pill" data-period="6m">6M</button>
+            <button class="period-pill" data-period="ytd">YTD</button>
+            <button class="period-pill" data-period="1y">1Y</button>
+            <button class="period-pill" data-period="5y">5Y</button>
+            <button class="period-pill" data-period="max">MAX</button>
+          </div>
+        </div>
+        <div class="chart-pair">
+          <div>
+            <h3 class="chart-subtitle">Daily</h3>
+            <div class="chart-container chart-container--wide">
+              <canvas id="clones-daily-canvas"></canvas>
+            </div>
+          </div>
+          <div>
+            <h3 class="chart-subtitle">Cumulative</h3>
+            <div class="chart-container chart-container--wide">
+              <canvas id="clones-cumulative-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card" id="referrers-chart">
+        <h2>Top Referrers</h2>
+        <div class="chart-container chart-container--half">
+          <canvas id="referrers-canvas"></canvas>
+        </div>
+      </section>
+      <section class="card" id="paths-table">
+        <h2>Popular Pages</h2>
+        <div id="paths-container"></div>
+      </section>
+      <section class="card card-wide" id="releases-section">
+        <h2>Releases</h2>
+        <div id="releases-timeline"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

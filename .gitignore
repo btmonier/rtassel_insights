@@ -9,6 +9,10 @@ pixi.lock
 *.Rproj
 .Renviron
 
+# Dashboard
+dashboard/node_modules/
+dashboard/dist/
+
 # OS
 .DS_Store
 Thumbs.db

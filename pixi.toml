@@ -14,3 +14,6 @@ collect-traffic = "Rscript scripts/collect_traffic.R"
 collect-repo = "Rscript scripts/collect_repo_info.R"
 collect-releases = "Rscript scripts/collect_releases.R"
 collect-all = { depends-on = ["collect-traffic", "collect-repo", "collect-releases"] }
+build-dashboard = "cd dashboard && npm install && npm run build"
+preview-dashboard = { cmd = "cd dashboard && npx vite preview --open", depends-on = ["build-dashboard"] }
+dev-dashboard = "cd dashboard && npm install && npx vite --open"
