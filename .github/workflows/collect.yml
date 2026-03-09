@@ -2,8 +2,10 @@ name: Collect rTASSEL GitHub Insights
 
 on:
   schedule:
-    # Twice weekly (Mon + Thu at 06:00 UTC) to capture traffic within 14-day window
-    - cron: "0 6 * * 1,4"
+    # 6 AM CST (winter)
+    - cron: "0 12 * * *"
+    # 6 AM CDT (summer)
+    - cron: "0 11 * * *"
   workflow_dispatch:
 
 permissions:
