@@ -258,5 +258,70 @@
         "uniques": 1
       }
     ]
+  },
+  {
+    "collected_at": "2026-03-09T22:04:54Z",
+    "entries": [
+      {
+        "path": "/maize-genetics/rTASSEL",
+        "title": "GitHub - maize-genetics/rTASSEL: R front-end for TASSEL 5",
+        "count": 78,
+        "uniques": 39
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/tree/master/R",
+        "title": "rTASSEL/R at master · maize-genetics/rTASSEL · GitHub",
+        "count": 8,
+        "uniques": 6
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/analysis_phylogeny_functions.R",
+        "title": "rTASSEL/R/analysis_phylogeny_functions.R at master · maize-genetics/rTASSEL ·...",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/join_methods.R",
+        "title": "rTASSEL/R/join_methods.R at master · maize-genetics/rTASSEL · GitHub",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/vignettes/rTASSEL.Rmd",
+        "title": "rTASSEL/vignettes at master · maize-genetics/rTASSEL",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/releases",
+        "title": "Releases · maize-genetics/rTASSEL",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/tree/master",
+        "title": "GitHub - maize-genetics/rTASSEL: R front-end for TASSEL 5",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/tree/master/vignettes",
+        "title": "rTASSEL/DESCRIPTION at master · maize-genetics/rTASSEL",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/analysis_stepwise_functions.R",
+        "title": "rTASSEL/R at master · maize-genetics/rTASSEL · GitHub",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/class_association_results.R",
+        "title": "rTASSEL/R/class_association_results.R at master · maize-genetics/rTASSEL · Gi...",
+        "count": 2,
+        "uniques": 1
+      }
+    ]
   }
 ]
