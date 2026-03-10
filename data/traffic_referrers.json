@@ -208,5 +208,40 @@
         "uniques": 1
       }
     ]
+  },
+  {
+    "collected_at": "2026-03-10T17:39:53Z",
+    "entries": [
+      {
+        "referrer": "Google",
+        "count": 25,
+        "uniques": 10
+      },
+      {
+        "referrer": "Bing",
+        "count": 12,
+        "uniques": 6
+      },
+      {
+        "referrer": "bitbucket.org",
+        "count": 7,
+        "uniques": 4
+      },
+      {
+        "referrer": "rtassel.maizegenetics.net",
+        "count": 5,
+        "uniques": 3
+      },
+      {
+        "referrer": "github.com",
+        "count": 3,
+        "uniques": 3
+      },
+      {
+        "referrer": "ecosia.org",
+        "count": 1,
+        "uniques": 1
+      }
+    ]
   }
 ]
