@@ -5,7 +5,7 @@
   --color-text-muted: #64748b;
   --color-border: #e2e8f0;
   --color-accent: #3b82f6;
-  --color-secondary: #8b5cf6;
+  --color-secondary: #e87007;
   --color-accent-light: #dbeafe;
   --radius: 12px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -19,7 +19,7 @@
     --color-text-muted: #94a3b8;
     --color-border: #334155;
     --color-accent: #60a5fa;
-    --color-secondary: #a78bfa;
+    --color-secondary: #fb923c;
     --color-accent-light: #1e3a5f;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
   }
@@ -138,6 +138,7 @@ body {
   border-radius: var(--radius);
   padding: 1.5rem;
   box-shadow: var(--shadow);
+  min-width: 0;
 }
 
 .card h2 {
@@ -270,6 +271,11 @@ body {
 .chart-container {
   position: relative;
   width: 100%;
+  overflow: hidden;
+}
+
+.chart-pair > * {
+  min-width: 0;
 }
 
 .chart-container--wide {
@@ -346,24 +352,43 @@ body {
 
 /* ---- Release timeline ---- */
 
+.timeline-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.timeline-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.timeline-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.timeline-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
 .timeline-track {
   position: relative;
-  height: 160px;
+  min-width: 100%;
 }
 
 .timeline-line {
   position: absolute;
-  top: 50%;
-  left: 3%;
-  right: 3%;
+  left: 0;
+  right: 0;
   height: 2px;
   background: var(--color-border);
   border-radius: 1px;
+  transform: translateY(-1px);
 }
 
 .timeline-point {
   position: absolute;
-  top: 50%;
   transform: translate(-50%, -50%);
   width: 14px;
   height: 14px;
@@ -375,6 +400,8 @@ body {
 }
 
 .timeline-dot {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -390,6 +417,23 @@ body {
   box-shadow: 0 0 0 3px var(--color-accent);
 }
 
+.timeline-stem {
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border);
+  transform: translateX(-0.5px);
+  pointer-events: none;
+}
+
+.timeline-point--above .timeline-stem {
+  bottom: 100%;
+}
+
+.timeline-point--below .timeline-stem {
+  top: 100%;
+}
+
 .timeline-label {
   position: absolute;
   left: 50%;
@@ -399,14 +443,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.timeline-point--above .timeline-label {
-  bottom: calc(100% + 10px);
-}
-
-.timeline-point--below .timeline-label {
-  top: calc(100% + 10px);
 }
 
 .timeline-tag {
@@ -435,6 +471,26 @@ body {
 .timeline-point:hover .timeline-dl {
   max-height: 1.5em;
   opacity: 1;
+}
+
+.timeline-year-marker {
+  position: absolute;
+  width: 1px;
+  background: var(--color-border);
+  opacity: 0.5;
+  transform: translateX(-0.5px);
+  pointer-events: none;
+}
+
+.timeline-year-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  margin-top: 4px;
 }
 
 .timeline-empty {
@@ -466,24 +522,65 @@ body {
 
 /* ---- Responsive ---- */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
     padding: 0 1rem;
+    gap: 1rem;
+    margin: 1.25rem auto;
   }
 
   .header-inner {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .kpi-row {
-    width: 100%;
-    justify-content: space-between;
+    gap: 0.75rem;
   }
 
   #dashboard-header {
     padding: 1rem;
+  }
+
+  .kpi-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .kpi-card {
+    padding: 0.5rem 0.75rem;
+    min-width: 0;
+  }
+
+  .kpi-value {
+    font-size: 1.25rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .period-pills {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+
+  .period-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .period-pill {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
+    min-height: 36px;
   }
 
   .chart-container--wide {
@@ -496,10 +593,98 @@ body {
 
   .chart-pair {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .summary-row {
     grid-template-columns: repeat(2, 1fr);
     padding: 0 1rem;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .summary-card {
+    padding: 0.75rem 1rem;
+  }
+
+  .summary-value {
+    font-size: 1.15rem;
+  }
+
+  #paths-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .paths-table {
+    min-width: 400px;
+  }
+
+  .timeline-tag {
+    font-size: 0.65rem;
+  }
+
+  .timeline-date {
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title h1 {
+    font-size: 1.25rem;
+  }
+
+  .summary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    padding: 0.65rem 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .summary-icon {
+    font-size: 1.5rem;
+  }
+
+  .summary-value {
+    font-size: 1.05rem;
+  }
+
+  .chart-container--wide {
+    aspect-ratio: 1.6 / 1;
+  }
+
+  .chart-container--half {
+    aspect-ratio: 1.2 / 1;
+  }
+
+  .card {
+    padding: 0.85rem;
+  }
+
+  .card h2 {
+    font-size: 0.85rem;
+  }
+
+  .kpi-card {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .kpi-value {
+    font-size: 1.1rem;
+  }
+
+  .kpi-icon {
+    font-size: 1.25rem;
+  }
+
+  .kpi-label {
+    font-size: 0.65rem;
+  }
+
+  .timeline-point {
+    width: 10px;
+    height: 10px;
   }
 }
