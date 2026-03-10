@@ -15,7 +15,7 @@ export function renderReferrersChart(
   const style = getComputedStyle(document.documentElement);
   const accent = style.getPropertyValue("--color-accent").trim() || "#3b82f6";
   const secondary =
-    style.getPropertyValue("--color-secondary").trim() || "#8b5cf6";
+    style.getPropertyValue("--color-secondary").trim() || "#e87007";
 
   return new Chart(canvas, {
     type: "bar",

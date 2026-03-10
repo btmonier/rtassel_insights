@@ -12,7 +12,7 @@ function getColors(): { accent: string; secondary: string } {
   const style = getComputedStyle(document.documentElement);
   return {
     accent: style.getPropertyValue("--color-accent").trim() || "#3b82f6",
-    secondary: style.getPropertyValue("--color-secondary").trim() || "#8b5cf6",
+    secondary: style.getPropertyValue("--color-secondary").trim() || "#e87007",
   };
 }
 
