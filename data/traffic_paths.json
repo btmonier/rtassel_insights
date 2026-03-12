@@ -518,5 +518,70 @@
         "uniques": 1
       }
     ]
+  },
+  {
+    "collected_at": "2026-03-12T11:14:48Z",
+    "entries": [
+      {
+        "path": "/maize-genetics/rTASSEL",
+        "title": "GitHub - maize-genetics/rTASSEL: R front-end for TASSEL 5",
+        "count": 67,
+        "uniques": 33
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/tree/master/R",
+        "title": "maize-genetics/rTASSEL: R front-end for TASSEL 5",
+        "count": 8,
+        "uniques": 6
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/analysis_phylogeny_functions.R",
+        "title": "rTASSEL/R/analysis_phylogeny_functions.R at master · maize-genetics/rTASSEL ·...",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/join_methods.R",
+        "title": "rTASSEL/R/join_methods.R at master · maize-genetics/rTASSEL · GitHub",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/releases",
+        "title": "Releases · maize-genetics/rTASSEL",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/tree/master",
+        "title": "GitHub - maize-genetics/rTASSEL: R front-end for TASSEL 5",
+        "count": 2,
+        "uniques": 2
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/analysis_stepwise_functions.R",
+        "title": "rTASSEL/R at master · maize-genetics/rTASSEL · GitHub",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/class_association_results.R",
+        "title": "rTASSEL/R/class_association_results.R at master · maize-genetics/rTASSEL · Gi...",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/blob/master/R/imputation_methods.R",
+        "title": "rTASSEL/R at master · maize-genetics/rTASSEL · GitHub",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "path": "/maize-genetics/rTASSEL/actions",
+        "title": "Workflow runs · maize-genetics/rTASSEL · GitHub",
+        "count": 1,
+        "uniques": 1
+      }
+    ]
   }
 ]
