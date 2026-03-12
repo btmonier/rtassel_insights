@@ -20,9 +20,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.3019111"
-     inkscape:cx="-13.901492"
-     inkscape:cy="17.811287"
+     inkscape:zoom="3.6811582"
+     inkscape:cx="19.559062"
+     inkscape:cy="29.066939"
      inkscape:window-width="1512"
      inkscape:window-height="847"
      inkscape:window-x="0"
@@ -30,7 +30,7 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1" />
   <polygon
-     points="58,46 32,60 6,46 6,18 32,4 58,18 "
+     points="6,46 6,18 32,4 58,18 58,46 32,60 "
      fill="none"
      stroke="#5DADE2"
      stroke-width="7"
@@ -38,4 +38,15 @@
      id="polygon1"
      style="stroke:#3b82f6;stroke-width:9.77323;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
      transform="matrix(0.92114114,0,0,0.92062507,2.5234835,2.5399978)" />
+  <text
+     xml:space="preserve"
+     style="font-size:37.3333px;line-height:43.5995px;font-family:'Roboto Mono';-inkscape-font-specification:'Roboto Mono';letter-spacing:0.32px;writing-mode:lr-tb;direction:ltr;fill:#3b82f6;fill-opacity:1;fill-rule:evenodd;stroke:#3b82f6;stroke-width:9;stroke-linecap:round"
+     x="20.679697"
+     y="45.352852"
+     id="text1"><tspan
+       sodipodi:role="line"
+       id="tspan1"
+       x="20.679697"
+       y="45.352852"
+       style="font-weight:bold;fill:#3b82f6;fill-opacity:1;stroke:none">?</tspan></text>
 </svg>
