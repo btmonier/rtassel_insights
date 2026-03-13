@@ -24,6 +24,12 @@ export interface ReferrerSnapshot {
   entries: ReferrerEntry[];
 }
 
+/** Columnar format: referrer names once, snapshots as [collected_at, [count,uniques][]]. */
+export interface ReferrersColumnar {
+  referrers: string[];
+  snapshots: [string, [number, number][]][];
+}
+
 export interface PathEntry {
   path: string;
   title: string;

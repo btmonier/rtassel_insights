@@ -61,9 +61,9 @@ if (!is.null(referrers_raw)) {
         collected_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
         entries = referrers_raw
     )
-    existing <- load_snapshots(data_path("traffic_referrers.json"))
-    updated  <- append_snapshot(existing, snapshot)
-    save_json(updated, data_path("traffic_referrers.json"))
+    existing <- load_referrers_columnar(data_path("traffic_referrers.json"))
+    updated  <- append_snapshot_referrers(existing, snapshot)
+    save_referrers_columnar(updated, data_path("traffic_referrers.json"))
 } else {
     cli_alert_warning("Skipping referrers (insufficient permissions)")
     had_errors <- TRUE

@@ -3,6 +3,8 @@ import type {
   RepoOverview,
   TrafficEntry,
   ReferrerSnapshot,
+  ReferrersColumnar,
+  ReferrerEntry,
   PathSnapshot,
   Release,
   PeriodFilter,
@@ -22,6 +24,32 @@ async function fetchJSON<T>(path: string): Promise<T> {
   const res = await fetch(path);
   if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`);
   return res.json() as Promise<T>;
+}
+
+function getLatestReferrerEntries(
+  data: ReferrerSnapshot[] | ReferrersColumnar,
+): ReferrerEntry[] {
+  if (Array.isArray(data) && data.length > 0) {
+    const last = data[data.length - 1] as ReferrerSnapshot;
+    if (last.entries) return last.entries;
+  }
+  if (
+    data &&
+    typeof data === "object" &&
+    "referrers" in data &&
+    "snapshots" in data &&
+    Array.isArray((data as ReferrersColumnar).snapshots)
+  ) {
+    const col = data as ReferrersColumnar;
+    if (col.snapshots.length === 0) return [];
+    const [_, row] = col.snapshots[col.snapshots.length - 1];
+    return col.referrers.map((referrer, i) => ({
+      referrer,
+      count: row[i]?.[0] ?? 0,
+      uniques: row[i]?.[1] ?? 0,
+    }));
+  }
+  return [];
 }
 
 function setupPeriodPills(
@@ -45,15 +73,17 @@ function setupPeriodPills(
 async function main(): Promise<void> {
   const base = import.meta.env.BASE_URL;
 
-  const [overview, views, clones, referrers, paths, releases] =
+  const [overview, views, clones, referrersData, paths, releases] =
     await Promise.all([
       fetchJSON<RepoOverview[]>(`${base}data/repo_overview.json`),
       fetchJSON<TrafficEntry[]>(`${base}data/traffic_views.json`),
       fetchJSON<TrafficEntry[]>(`${base}data/traffic_clones.json`),
-      fetchJSON<ReferrerSnapshot[]>(`${base}data/traffic_referrers.json`),
+      fetchJSON<ReferrerSnapshot[] | ReferrersColumnar>(`${base}data/traffic_referrers.json`),
       fetchJSON<PathSnapshot[]>(`${base}data/traffic_paths.json`),
       fetchJSON<Release[]>(`${base}data/release_downloads.json`),
     ]);
+
+  const referrerEntries = getLatestReferrerEntries(referrersData);
 
   const headerEl = document.getElementById("dashboard-header");
   if (headerEl && overview.length > 0) {
@@ -82,11 +112,8 @@ async function main(): Promise<void> {
   const referrersCanvas = document.getElementById(
     "referrers-canvas",
   ) as HTMLCanvasElement | null;
-  if (referrersCanvas && referrers.length > 0) {
-    renderReferrersChart(
-      referrersCanvas,
-      referrers[referrers.length - 1].entries,
-    );
+  if (referrersCanvas && referrerEntries.length > 0) {
+    renderReferrersChart(referrersCanvas, referrerEntries);
   }
 
   const pathsContainer = document.getElementById("paths-container");
