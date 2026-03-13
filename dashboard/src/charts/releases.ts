@@ -5,11 +5,11 @@ const PAD_PX = 50;
 const DOT_SIZE = 14;
 const DOT_RADIUS = DOT_SIZE / 2;
 const BASE_STEM = 14;
-const TIER_STEP = 24;
+const TIER_STEP = 32;
 const LABEL_GAP = 2;
 const LABEL_HEIGHT_EST = 28;
 const TRACK_VERTICAL_PAD = 12;
-const LABEL_SPACING = 8;
+const LABEL_SPACING = 16;
 const MS_PER_YEAR = 365.25 * 24 * 60 * 60 * 1000;
 
 interface PointInfo {
@@ -156,10 +156,17 @@ export function renderReleasesTimeline(
         ? `${downloads.toLocaleString()} downloads`
         : "No assets";
 
-    const point = document.createElement("div");
+    const point = pt.release.html_url
+      ? document.createElement("a")
+      : document.createElement("div");
     point.className = `timeline-point ${pt.above ? "timeline-point--above" : "timeline-point--below"}`;
     point.style.left = `${pt.xPx}px`;
     point.style.top = `${centerY}px`;
+    if (pt.release.html_url) {
+      (point as HTMLAnchorElement).href = pt.release.html_url;
+      (point as HTMLAnchorElement).target = "_blank";
+      (point as HTMLAnchorElement).rel = "noopener noreferrer";
+    }
 
     const labelEl = document.createElement("div");
     labelEl.className = "timeline-label";
@@ -168,8 +175,9 @@ export function renderReleasesTimeline(
     } else {
       labelEl.style.top = `calc(100% + ${stemHeight + LABEL_GAP}px)`;
     }
+    const tagContent = `<span class="timeline-tag">${pt.release.tag_name}</span>`;
     labelEl.innerHTML =
-      `<span class="timeline-tag">${pt.release.tag_name}</span>` +
+      tagContent +
       `<span class="timeline-date">${dateStr}</span>` +
       `<span class="timeline-dl">${dlText}</span>`;
 

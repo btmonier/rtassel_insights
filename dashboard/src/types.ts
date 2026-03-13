@@ -46,12 +46,8 @@ export interface Release {
   tag_name: string;
   name: string;
   published_at: string;
+  html_url?: string;
   assets: ReleaseAsset[];
-}
-
-export interface ReleaseSnapshot {
-  collected_at: string;
-  releases: Release[];
 }
 
 export type PeriodFilter =

@@ -4,7 +4,7 @@ import type {
   TrafficEntry,
   ReferrerSnapshot,
   PathSnapshot,
-  ReleaseSnapshot,
+  Release,
   PeriodFilter,
 } from "./types";
 import { renderHeader } from "./components/header";
@@ -52,7 +52,7 @@ async function main(): Promise<void> {
       fetchJSON<TrafficEntry[]>(`${base}data/traffic_clones.json`),
       fetchJSON<ReferrerSnapshot[]>(`${base}data/traffic_referrers.json`),
       fetchJSON<PathSnapshot[]>(`${base}data/traffic_paths.json`),
-      fetchJSON<ReleaseSnapshot[]>(`${base}data/release_downloads.json`),
+      fetchJSON<Release[]>(`${base}data/release_downloads.json`),
     ]);
 
   const headerEl = document.getElementById("dashboard-header");
@@ -96,7 +96,7 @@ async function main(): Promise<void> {
 
   const releasesEl = document.getElementById("releases-timeline");
   if (releasesEl && releases.length > 0) {
-    renderReleasesTimeline(releasesEl, releases[releases.length - 1].releases);
+    renderReleasesTimeline(releasesEl, releases);
   }
 }
 

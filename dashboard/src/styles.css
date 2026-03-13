@@ -391,6 +391,13 @@ body {
   position: absolute;
   transform: translate(-50%, -50%);
   width: 14px;
+}
+
+a.timeline-point {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
   height: 14px;
   z-index: 1;
 }
@@ -450,6 +457,15 @@ body {
   font-weight: 600;
   color: var(--color-text);
   line-height: 1.3;
+}
+
+.timeline-tag--link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.timeline-tag--link:hover {
+  text-decoration: underline;
 }
 
 .timeline-date {
