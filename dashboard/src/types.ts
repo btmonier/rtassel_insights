@@ -42,6 +42,13 @@ export interface PathSnapshot {
   entries: PathEntry[];
 }
 
+/** Columnar format: paths and titles once, snapshots as [collected_at, [count,uniques][]]. */
+export interface PathsColumnar {
+  paths: string[];
+  titles: string[];
+  snapshots: [string, [number, number][]][];
+}
+
 export interface ReleaseAsset {
   name: string;
   download_count: number;

@@ -6,6 +6,8 @@ import type {
   ReferrersColumnar,
   ReferrerEntry,
   PathSnapshot,
+  PathsColumnar,
+  PathEntry,
   Release,
   PeriodFilter,
 } from "./types";
@@ -52,6 +54,34 @@ function getLatestReferrerEntries(
   return [];
 }
 
+function getLatestPathEntries(
+  data: PathSnapshot[] | PathsColumnar,
+): PathEntry[] {
+  if (Array.isArray(data) && data.length > 0) {
+    const last = data[data.length - 1] as PathSnapshot;
+    if (last.entries) return last.entries;
+  }
+  if (
+    data &&
+    typeof data === "object" &&
+    "paths" in data &&
+    "titles" in data &&
+    "snapshots" in data &&
+    Array.isArray((data as PathsColumnar).snapshots)
+  ) {
+    const col = data as PathsColumnar;
+    if (col.snapshots.length === 0) return [];
+    const [_, row] = col.snapshots[col.snapshots.length - 1];
+    return col.paths.map((path, i) => ({
+      path,
+      title: col.titles[i] ?? "",
+      count: row[i]?.[0] ?? 0,
+      uniques: row[i]?.[1] ?? 0,
+    }));
+  }
+  return [];
+}
+
 function setupPeriodPills(
   containerId: string,
   section: TrafficSection,
@@ -73,17 +103,18 @@ function setupPeriodPills(
 async function main(): Promise<void> {
   const base = import.meta.env.BASE_URL;
 
-  const [overview, views, clones, referrersData, paths, releases] =
+  const [overview, views, clones, referrersData, pathsData, releases] =
     await Promise.all([
       fetchJSON<RepoOverview[]>(`${base}data/repo_overview.json`),
       fetchJSON<TrafficEntry[]>(`${base}data/traffic_views.json`),
       fetchJSON<TrafficEntry[]>(`${base}data/traffic_clones.json`),
       fetchJSON<ReferrerSnapshot[] | ReferrersColumnar>(`${base}data/traffic_referrers.json`),
-      fetchJSON<PathSnapshot[]>(`${base}data/traffic_paths.json`),
+      fetchJSON<PathSnapshot[] | PathsColumnar>(`${base}data/traffic_paths.json`),
       fetchJSON<Release[]>(`${base}data/release_downloads.json`),
     ]);
 
   const referrerEntries = getLatestReferrerEntries(referrersData);
+  const pathEntries = getLatestPathEntries(pathsData);
 
   const headerEl = document.getElementById("dashboard-header");
   if (headerEl && overview.length > 0) {
@@ -117,8 +148,8 @@ async function main(): Promise<void> {
   }
 
   const pathsContainer = document.getElementById("paths-container");
-  if (pathsContainer && paths.length > 0) {
-    renderPaths(pathsContainer, paths[paths.length - 1].entries);
+  if (pathsContainer && pathEntries.length > 0) {
+    renderPaths(pathsContainer, pathEntries);
   }
 
   const releasesEl = document.getElementById("releases-timeline");

@@ -83,9 +83,9 @@ if (!is.null(paths_raw)) {
         collected_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
         entries = paths_raw
     )
-    existing <- load_snapshots(data_path("traffic_paths.json"))
-    updated  <- append_snapshot(existing, snapshot)
-    save_json(updated, data_path("traffic_paths.json"))
+    existing <- load_paths_columnar(data_path("traffic_paths.json"))
+    updated  <- append_snapshot_paths(existing, snapshot)
+    save_paths_columnar(updated, data_path("traffic_paths.json"))
 } else {
     cli_alert_warning("Skipping paths (insufficient permissions)")
     had_errors <- TRUE

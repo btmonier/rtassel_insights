@@ -140,6 +140,111 @@ append_snapshot_referrers <- function(existing, new_snapshot) {
     list(referrers = referrers, snapshots = c(snapshots, list(list(new_snapshot$collected_at, row))))
 }
 
+
+# --- Paths columnar format ----------------------------------------------------
+
+#' Load paths data from JSON. Supports columnar format (paths, titles, snapshots)
+#' and legacy format (array of { collected_at, entries }); legacy is converted
+#' to columnar in memory.
+load_paths_columnar <- function(path) {
+    if (!file.exists(path))
+        return(list(paths = character(0L), titles = character(0L), snapshots = list()))
+    raw <- fromJSON(path, simplifyDataFrame = FALSE)
+    if (length(raw) == 0L)
+        return(list(paths = character(0L), titles = character(0L), snapshots = list()))
+    if (is.list(raw) && !is.null(raw$paths) && !is.null(raw$titles) && !is.null(raw$snapshots))
+        return(list(paths = raw$paths, titles = raw$titles, snapshots = raw$snapshots))
+    first <- raw[[1L]]
+    if (is.list(first) && !is.null(first$collected_at) && !is.null(first$entries)) {
+        return(paths_legacy_to_columnar(raw))
+    }
+    list(paths = character(0L), titles = character(0L), snapshots = list())
+}
+
+#' Convert legacy paths snapshot array to columnar format.
+paths_legacy_to_columnar <- function(legacy) {
+    all_paths <- character(0L)
+    all_titles <- character(0L)
+    for (s in legacy)
+        for (e in s$entries) {
+            if (!e$path %in% all_paths) {
+                all_paths <- c(all_paths, e$path)
+                all_titles <- c(all_titles, e$title)
+            }
+        }
+    paths <- all_paths
+    titles <- all_titles
+    snapshots <- list()
+    for (s in legacy) {
+        row <- vector("list", length(paths))
+        for (i in seq_along(paths)) {
+            hit <- NULL
+            for (e in s$entries)
+                if (identical(e$path, paths[[i]])) { hit <- e; break }
+            row[[i]] <- if (is.null(hit)) list(0L, 0L) else list(as.integer(hit$count), as.integer(hit$uniques))
+        }
+        snapshots <- c(snapshots, list(list(s$collected_at, row)))
+    }
+    list(paths = paths, titles = titles, snapshots = snapshots)
+}
+
+#' Save paths in columnar format. Snapshot arrays are written on single lines.
+save_paths_columnar <- function(data, path) {
+    if (!dir.exists(dirname(path))) dir.create(dirname(path), recursive = TRUE)
+    paths_line <- toJSON(data$paths, pretty = FALSE, auto_unbox = TRUE)
+    titles_line <- toJSON(data$titles, pretty = FALSE, auto_unbox = TRUE)
+    snap_lines <- vapply(data$snapshots, function(s) toJSON(s, pretty = FALSE, auto_unbox = TRUE), character(1L))
+    snap_block <- paste0("    ", snap_lines, c(rep(",", length(snap_lines) - 1L), ""))
+    out <- c(
+        "{",
+        paste0('  "paths": ', paths_line, ","),
+        paste0('  "titles": ', titles_line, ","),
+        "  \"snapshots\": [",
+        snap_block,
+        "  ]",
+        "}"
+    )
+    writeLines(out, path)
+    cli_alert_success("Saved {.path {path}}")
+}
+
+#' Append one API-style snapshot to columnar paths data. New paths (with titles)
+#' extend paths/titles and existing snapshot rows are padded with [0, 0].
+append_snapshot_paths <- function(existing, new_snapshot) {
+    entries <- new_snapshot$entries
+    if (length(entries) == 0L) {
+        n <- length(existing$paths)
+        row <- if (n > 0L) rep(list(list(0L, 0L)), n) else list()
+        return(list(
+            paths = existing$paths,
+            titles = existing$titles,
+            snapshots = c(existing$snapshots, list(list(new_snapshot$collected_at, row)))
+        ))
+    }
+    paths <- existing$paths
+    titles <- existing$titles
+    for (e in entries) {
+        if (!e$path %in% paths) {
+            paths <- c(paths, e$path)
+            titles <- c(titles, e$title)
+        }
+    }
+    n_new <- length(paths) - length(existing$paths)
+    snapshots <- existing$snapshots
+    if (n_new > 0L) {
+        pad <- rep(list(list(0L, 0L)), n_new)
+        snapshots <- lapply(snapshots, function(s) list(s[[1L]], c(s[[2L]], pad)))
+    }
+    row <- vector("list", length(paths))
+    for (i in seq_along(paths)) {
+        hit <- NULL
+        for (e in entries)
+            if (identical(e$path, paths[[i]])) { hit <- e; break }
+        row[[i]] <- if (is.null(hit)) list(0L, 0L) else list(as.integer(hit$count), as.integer(hit$uniques))
+    }
+    list(paths = paths, titles = titles, snapshots = c(snapshots, list(list(new_snapshot$collected_at, row))))
+}
+
 #' Load release list from release_downloads.json.
 #' Supports legacy format (array of { collected_at, releases }) by using the
 #' latest snapshot's releases; otherwise expects array of release entries.
