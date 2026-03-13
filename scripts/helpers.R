@@ -45,10 +45,29 @@ load_snapshots <- function(path) {
     fromJSON(path, simplifyDataFrame = FALSE)
 }
 
-#' Append a snapshot to an existing list of snapshots.
-append_snapshot <- function(existing, snapshot) {
-    if (is.null(existing) || length(existing) == 0) return(list(snapshot))
-    c(existing, list(snapshot))
+#' Load release list from release_downloads.json.
+#' Supports legacy format (array of { collected_at, releases }) by using the
+#' latest snapshot's releases; otherwise expects array of release entries.
+load_release_list <- function(path) {
+    if (!file.exists(path)) return(list())
+    raw <- fromJSON(path, simplifyDataFrame = FALSE)
+    if (length(raw) == 0) return(list())
+    first <- raw[[1]]
+    if (!is.null(first$collected_at) && !is.null(first$releases)) {
+        raw <- raw[[length(raw)]][["releases"]]
+    }
+    if (is.null(raw)) list() else raw
+}
+
+#' Merge release lists by tag_name; new entries (from API) overwrite existing.
+#' Returns a list of releases sorted by published_at ascending (oldest first).
+merge_releases_by_tag <- function(existing, new_releases) {
+    by_tag <- list()
+    for (r in existing) by_tag[[r$tag_name]] <- r
+    for (r in new_releases) by_tag[[r$tag_name]] <- r
+    out <- unname(by_tag)
+    dates <- vapply(out, function(r) r$published_at, character(1))
+    out[order(dates)]
 }
 
 

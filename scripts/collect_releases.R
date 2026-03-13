@@ -28,20 +28,17 @@ if (length(releases_raw) > 0) {
             tag_name     = rel$tag_name,
             name         = rel$name,
             published_at = rel$published_at,
+            html_url     = rel$html_url,
             assets       = assets
         )
     })
 
-    snapshot <- list(
-        collected_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
-        releases     = releases
-    )
+    path <- data_path("release_downloads.json")
+    existing <- load_release_list(path)
+    updated  <- merge_releases_by_tag(existing, releases)
+    save_json(updated, path)
 
-    existing <- load_snapshots(data_path("release_downloads.json"))
-    updated  <- append_snapshot(existing, snapshot)
-    save_json(updated, data_path("release_downloads.json"))
-
-    cli_alert_info("Releases tracked: {length(releases)}")
+    cli_alert_info("Releases tracked: {length(updated)}")
 } else {
     cli_alert_warning("No releases found")
 }
