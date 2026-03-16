@@ -22,9 +22,25 @@ snapshot <- data.frame(
     stringsAsFactors  = FALSE
 )
 
+REPO_OVERVIEW_FIELDS <- c(
+    "stargazers_count", "forks_count", "open_issues_count",
+    "subscribers_count", "size"
+)
+
 existing <- load_json(data_path("repo_overview.json"))
-merged   <- if (is.null(existing)) snapshot else rbind(existing, snapshot)
-save_json(merged, data_path("repo_overview.json"))
+last     <- if (!is.null(existing) && nrow(existing) > 0L) existing[nrow(existing), ] else NULL
+unchanged <- if (!is.null(last)) {
+    all(vapply(REPO_OVERVIEW_FIELDS, function(f) identical(snapshot[[f]], last[[f]]), logical(1L)))
+} else {
+    FALSE
+}
+
+if (!unchanged) {
+    merged <- if (is.null(existing)) snapshot else rbind(existing, snapshot)
+    save_json(merged, data_path("repo_overview.json"))
+} else {
+    cli_alert_info("Repository overview unchanged; no new entry written.")
+}
 cli_alert_info(
     "Stars: {snapshot$stargazers_count} | Forks: {snapshot$forks_count} | Issues: {snapshot$open_issues_count}"
 )
