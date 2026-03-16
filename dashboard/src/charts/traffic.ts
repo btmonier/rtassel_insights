@@ -5,7 +5,11 @@ Chart.register(...registerables);
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 function getColors(): { accent: string; secondary: string } {
@@ -124,7 +128,7 @@ export function computeSummary(data: TrafficEntry[]): TrafficSummary {
     totalUniques += entry.uniques;
 
     const d = new Date(entry.timestamp);
-    const key = `${d.getFullYear()}-${d.getMonth()}`;
+    const key = `${d.getUTCFullYear()}-${d.getUTCMonth()}`;
     const bucket = monthBuckets.get(key) ?? { count: 0, uniques: 0 };
     bucket.count += entry.count;
     bucket.uniques += entry.uniques;
