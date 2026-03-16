@@ -27,42 +27,9 @@ jobs:
           HOUR=$(TZ='America/Chicago' date +%H)
           echo "should_run=$( [ "$HOUR" = "06" ] && echo 'true' || echo 'false' )" >> "$GITHUB_OUTPUT"
 
-  collect:
+  collect-and-deploy:
     needs: check-time
     if: needs.check-time.outputs.should-run == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up pixi
-        uses: prefix-dev/setup-pixi@v0.8.1
-
-      - name: Collect traffic data
-        run: pixi run collect-traffic
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      - name: Collect repository info
-        run: pixi run collect-repo
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      - name: Collect release data
-        run: pixi run collect-releases
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      - name: Commit and push data
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "data: update rTASSEL insights [automated]"
-          file_pattern: "data/*.json"
-          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
-
-  deploy:
-    needs: collect
     runs-on: ubuntu-latest
 
     environment:
@@ -72,8 +39,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up pixi
+        uses: prefix-dev/setup-pixi@v0.8.1
+
+      - name: Collect all data
+        run: pixi run collect-all
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Commit and push data
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          ref: main
+          commit_message: "data: update rTASSEL insights [automated]"
+          file_pattern: "data/*.json"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

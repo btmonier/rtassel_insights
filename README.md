@@ -15,7 +15,7 @@ Pages.
 |-------|--------------|
 | Data collection | R, `gh`, `jsonlite` |
 | Dashboard | TypeScript, Vite, Chart.js, date-fns |
-| Environment | Pixi (global control), npm (dashboard) |
+| Environment | Pixi (R + Node.js), npm (dashboard) |
 | CI/CD | GitHub Actions, GitHub Pages |
 
 ## Getting Started
@@ -23,7 +23,6 @@ Pages.
 ### Prerequisites
 
 - [Pixi](https://pixi.sh)
-- [Node.js](https://nodejs.org)
 - A GitHub PAT with repo traffic access
 
 ### Collect Data

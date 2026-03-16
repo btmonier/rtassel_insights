@@ -1,19 +1,21 @@
 [workspace]
-name = "rtassel_insights"
-channels = ["conda-forge"]
+name      = "rtassel_insights"
+channels  = ["conda-forge"]
 platforms = ["osx-arm64", "osx-64", "linux-64"]
 
 [dependencies]
-r-base = ">=4.3"
-r-gh = "*"
-r-jsonlite = "*"
-r-cli = "*"
+r-base     = ">=4.3"
+r-gh       = ">=1.5"
+r-jsonlite = ">=2.0"
+r-cli      = ">=3.6"
+nodejs     = ">=22"
 
 [tasks]
-collect-traffic = "Rscript scripts/collect_traffic.R"
-collect-repo = "Rscript scripts/collect_repo_info.R"
-collect-releases = "Rscript scripts/collect_releases.R"
-collect-all = { depends-on = ["collect-traffic", "collect-repo", "collect-releases"] }
-build-dashboard = "cd dashboard && npm install && npm run build"
-preview-dashboard = { cmd = "cd dashboard && npx vite preview --open", depends-on = ["build-dashboard"] }
-dev-dashboard = "cd dashboard && npm install && npx vite --open"
+collect-traffic   = "Rscript scripts/collect_traffic.R"
+collect-repo      = "Rscript scripts/collect_repo_info.R"
+collect-releases  = "Rscript scripts/collect_releases.R"
+collect-all       = { depends-on = ["collect-traffic", "collect-repo", "collect-releases"] }
+install-dashboard = { cmd = "npm install", cwd = "dashboard" }
+build-dashboard   = { cmd = "npm run build", cwd = "dashboard", depends-on = ["install-dashboard"] }
+preview-dashboard = { cmd = "npx vite preview --open", cwd = "dashboard", depends-on = ["build-dashboard"] }
+dev-dashboard     = { cmd = "npx vite --open", cwd = "dashboard", depends-on = ["install-dashboard"] }
