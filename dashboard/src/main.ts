@@ -1,4 +1,6 @@
 import "./styles.css";
+import pkg from "../package.json";
+import { initTheme, addThemeChangeListener } from "./theme";
 import type {
   RepoOverview,
   TrafficEntry,
@@ -12,12 +14,14 @@ import type {
   PeriodFilter,
 } from "./types";
 import { renderHeader } from "./components/header";
+import { renderFooter } from "./components/footer";
 import { renderSummary } from "./components/summary";
 import {
   createTrafficSection,
   computeSummary,
   type TrafficSection,
 } from "./charts/traffic";
+import type { Chart } from "chart.js";
 import { renderReferrersChart } from "./charts/referrers";
 import { renderPaths } from "./components/paths";
 import { renderReleasesTimeline } from "./charts/releases";
@@ -101,7 +105,10 @@ function setupPeriodPills(
 }
 
 async function main(): Promise<void> {
+  initTheme();
+
   const base = import.meta.env.BASE_URL;
+  const version = (pkg as { version?: string }).version ?? "0.0.0";
 
   const [overview, views, clones, referrersData, pathsData, releases] =
     await Promise.all([
@@ -117,8 +124,14 @@ async function main(): Promise<void> {
   const pathEntries = getLatestPathEntries(pathsData);
 
   const headerEl = document.getElementById("dashboard-header");
+  const topBarEl = document.getElementById("header-top-bar");
   if (headerEl && overview.length > 0) {
-    renderHeader(headerEl, overview[overview.length - 1]);
+    renderHeader(headerEl, overview[overview.length - 1], topBarEl ?? undefined);
+  }
+
+  const footerEl = document.getElementById("dashboard-footer");
+  if (footerEl && overview.length > 0) {
+    renderFooter(footerEl, overview[overview.length - 1].collected_at, version);
   }
 
   const summaryEl = document.getElementById("summary-stats");
@@ -128,24 +141,36 @@ async function main(): Promise<void> {
 
   const viewsDailyCanvas = document.getElementById("views-daily-canvas") as HTMLCanvasElement | null;
   const viewsCumCanvas = document.getElementById("views-cumulative-canvas") as HTMLCanvasElement | null;
+  let viewsSection: TrafficSection | null = null;
+  let clonesSection: TrafficSection | null = null;
   if (viewsDailyCanvas && viewsCumCanvas) {
-    const viewsSection = createTrafficSection(viewsDailyCanvas, viewsCumCanvas, views, "Views");
+    viewsSection = createTrafficSection(viewsDailyCanvas, viewsCumCanvas, views, "Views");
     setupPeriodPills("views-pills", viewsSection);
   }
 
   const clonesDailyCanvas = document.getElementById("clones-daily-canvas") as HTMLCanvasElement | null;
   const clonesCumCanvas = document.getElementById("clones-cumulative-canvas") as HTMLCanvasElement | null;
   if (clonesDailyCanvas && clonesCumCanvas) {
-    const clonesSection = createTrafficSection(clonesDailyCanvas, clonesCumCanvas, clones, "Clones");
+    clonesSection = createTrafficSection(clonesDailyCanvas, clonesCumCanvas, clones, "Clones");
     setupPeriodPills("clones-pills", clonesSection);
   }
 
   const referrersCanvas = document.getElementById(
     "referrers-canvas",
   ) as HTMLCanvasElement | null;
+  let referrersChart: Chart | null = null;
   if (referrersCanvas && referrerEntries.length > 0) {
-    renderReferrersChart(referrersCanvas, referrerEntries);
+    referrersChart = renderReferrersChart(referrersCanvas, referrerEntries);
   }
+
+  addThemeChangeListener(() => {
+    viewsSection?.refresh();
+    clonesSection?.refresh();
+    if (referrersChart && referrersCanvas && referrerEntries.length > 0) {
+      referrersChart.destroy();
+      referrersChart = renderReferrersChart(referrersCanvas, referrerEntries);
+    }
+  });
 
   const pathsContainer = document.getElementById("paths-container");
   if (pathsContainer && pathEntries.length > 0) {

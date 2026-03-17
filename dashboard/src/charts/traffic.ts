@@ -147,6 +147,7 @@ export function computeSummary(data: TrafficEntry[]): TrafficSummary {
 
 export interface TrafficSection {
   setPeriod(period: PeriodFilter): void;
+  refresh(): void;
 }
 
 export function createTrafficSection(
@@ -161,8 +162,10 @@ export function createTrafficSection(
 
   let dailyChart: Chart | null = null;
   let cumulativeChart: Chart | null = null;
+  let currentPeriod: PeriodFilter = "1w";
 
   function render(period: PeriodFilter): void {
+    currentPeriod = period;
     const filtered = filterByPeriod(sorted, period);
     const labels = filtered.map((d) => formatDate(d.timestamp));
     const counts = filtered.map((d) => d.count);
@@ -199,6 +202,9 @@ export function createTrafficSection(
   return {
     setPeriod(period: PeriodFilter) {
       render(period);
+    },
+    refresh() {
+      render(currentPeriod);
     },
   };
 }
