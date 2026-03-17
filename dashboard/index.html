@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>rTASSEL Insights</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=call_split,content_copy,error_outline,star,trending_up,visibility" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=call_split,content_copy,dark_mode,error_outline,light_mode,star,trending_up,visibility" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
+    <div class="header-top-bar" id="header-top-bar"></div>
     <header id="dashboard-header"></header>
     <div id="summary-stats" class="summary-row"></div>
     <main class="dashboard-grid">
@@ -85,6 +87,7 @@
         <div id="releases-timeline"></div>
       </section>
     </main>
+    <footer id="dashboard-footer"></footer>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
