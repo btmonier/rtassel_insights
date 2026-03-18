@@ -742,11 +742,16 @@ html.theme-dark .error-banner {
     padding: 1rem;
   }
 
+  .header-actions {
+    width: 100%;
+  }
+
   .kpi-row {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(115px, max-content));
     gap: 0.5rem;
+    justify-content: center;
   }
 
   .kpi-card {
