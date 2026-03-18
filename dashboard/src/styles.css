@@ -885,7 +885,8 @@ html.theme-dark .error-banner {
     font-size: 0.65rem;
   }
 
-  .timeline-point {
+  .timeline-point,
+  a.timeline-point {
     width: 10px;
     height: 10px;
   }
