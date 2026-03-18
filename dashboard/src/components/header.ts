@@ -46,8 +46,10 @@ export function renderHeader(
           ${kpis.map((k) => `
             <div class="kpi-card">
               <span class="kpi-icon material-symbols-outlined">${k.icon}</span>
-              <span class="kpi-value">${k.value.toLocaleString()}</span>
-              <span class="kpi-label">${k.label}</span>
+              <div class="kpi-text">
+                <span class="kpi-value">${k.value.toLocaleString()}</span>
+                <span class="kpi-label">${k.label}</span>
+              </div>
             </div>
           `).join("")}
         </div>
