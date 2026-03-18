@@ -778,6 +778,8 @@ html.theme-dark .error-banner {
     -webkit-overflow-scrolling: touch;
     max-width: 100%;
     scrollbar-width: none;
+    padding: 2px;
+    gap: 1px;
   }
 
   .period-pills::-webkit-scrollbar {
@@ -785,9 +787,9 @@ html.theme-dark .error-banner {
   }
 
   .period-pill {
-    padding: 0.45rem 0.75rem;
-    font-size: 0.8rem;
-    min-height: 36px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 32px;
   }
 
   .chart-container--wide {
@@ -839,6 +841,12 @@ html.theme-dark .error-banner {
 @media (max-width: 480px) {
   .header-title h1 {
     font-size: 1.25rem;
+  }
+
+  .period-pill {
+    padding: 0.3rem 0.4rem;
+    font-size: 0.7rem;
+    min-height: 28px;
   }
 
   .summary-card {
