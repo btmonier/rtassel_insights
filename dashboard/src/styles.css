@@ -71,6 +71,10 @@ body {
 
 /* ---- Header ---- */
 
+.site-header {
+  background: var(--color-surface);
+}
+
 .header-top-bar {
   background: var(--color-surface);
 }
@@ -729,18 +733,35 @@ html.theme-dark .error-banner {
     margin: 1.25rem auto;
   }
 
-  .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .header-top-bar-inner {
-    padding: 0.5rem 1rem 0;
+  .site-header {
+    position: relative;
+    border-bottom: 1px solid var(--color-border);
   }
 
   #dashboard-header {
     padding: 0.75rem 1rem;
+    border-bottom: none;
+  }
+
+  .header-top-bar {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+  }
+
+  .header-top-bar-inner {
+    padding: 0;
+    align-items: flex-start;
+  }
+
+  .header-title {
+    padding-right: 5.5rem;
+  }
+
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   #dashboard-footer {
