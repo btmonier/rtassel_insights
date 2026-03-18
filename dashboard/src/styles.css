@@ -841,10 +841,6 @@ html.theme-dark .error-banner {
     font-size: 1.25rem;
   }
 
-  .summary-row {
-    grid-template-columns: 1fr;
-  }
-
   .summary-card {
     padding: 0.65rem 0.85rem;
     gap: 0.5rem;
