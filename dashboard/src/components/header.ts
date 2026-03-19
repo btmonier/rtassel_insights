@@ -9,11 +9,7 @@ interface KPI {
   icon: string;
 }
 
-export function renderHeader(
-  container: HTMLElement,
-  overview: RepoOverview,
-  topBarContainer?: HTMLElement,
-): void {
+export function renderKPIs(container: HTMLElement, overview: RepoOverview): void {
   const kpis: KPI[] = [
     { label: "Stars", value: overview.stargazers_count, icon: "star" },
     { label: "Forks", value: overview.forks_count, icon: "call_split" },
@@ -21,50 +17,43 @@ export function renderHeader(
     { label: "Watchers", value: overview.subscribers_count, icon: "visibility" },
   ];
 
+  container.innerHTML = kpis
+    .map(
+      (k) => `
+      <div class="kpi-card">
+        <span class="kpi-icon material-symbols-outlined">${k.icon}</span>
+        <div class="kpi-text">
+          <span class="kpi-value">${k.value.toLocaleString()}</span>
+          <span class="kpi-label">${k.label}</span>
+        </div>
+      </div>`,
+    )
+    .join("");
+}
+
+export function renderHeader(container: HTMLElement, overview: RepoOverview): void {
   const isDark = getTheme() === "dark";
 
   const themeSliderHTML = `
-    <div class="header-top-bar-inner">
-      <div class="theme-slider-wrap" title="${isDark ? "Switch to light mode" : "Switch to dark mode"}">
-        <span class="theme-slider-icon material-symbols-outlined">light_mode</span>
-        <button type="button" class="theme-slider" role="switch" aria-checked="${isDark}" aria-label="Toggle dark mode">
-          <span class="theme-slider-thumb"></span>
-        </button>
-        <span class="theme-slider-icon material-symbols-outlined">dark_mode</span>
-      </div>
+    <div class="theme-slider-wrap" title="${isDark ? "Switch to light mode" : "Switch to dark mode"}">
+      <span class="theme-slider-icon material-symbols-outlined">light_mode</span>
+      <button type="button" class="theme-slider" role="switch" aria-checked="${isDark}" aria-label="Toggle dark mode">
+        <span class="theme-slider-thumb"></span>
+      </button>
+      <span class="theme-slider-icon material-symbols-outlined">dark_mode</span>
     </div>
   `;
 
-  const headerContent = `
+  container.innerHTML = `
     <div class="header-inner">
       <div class="header-title">
         <h1><a href="${REPO_URL}" target="_blank" rel="noopener">rTASSEL</a> Insights</h1>
-        <p class="subtitle">GitHub analytics for <code>maize-genetics/rTASSEL</code></p>
       </div>
-      <div class="header-actions">
-        <div class="kpi-row">
-          ${kpis.map((k) => `
-            <div class="kpi-card">
-              <span class="kpi-icon material-symbols-outlined">${k.icon}</span>
-              <div class="kpi-text">
-                <span class="kpi-value">${k.value.toLocaleString()}</span>
-                <span class="kpi-label">${k.label}</span>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-      </div>
+      ${themeSliderHTML}
     </div>
   `;
 
-  if (topBarContainer) {
-    topBarContainer.innerHTML = themeSliderHTML;
-    container.innerHTML = headerContent;
-  } else {
-    container.innerHTML = themeSliderHTML + headerContent;
-  }
-
-  const sliderRoot = topBarContainer ?? container;
+  const sliderRoot = container;
   const slider = sliderRoot.querySelector<HTMLButtonElement>(".theme-slider");
   const sliderWrap = sliderRoot.querySelector<HTMLElement>(".theme-slider-wrap");
   if (slider && sliderWrap) {

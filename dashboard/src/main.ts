@@ -13,7 +13,7 @@ import type {
   Release,
   PeriodFilter,
 } from "./types";
-import { renderHeader } from "./components/header";
+import { renderHeader, renderKPIs } from "./components/header";
 import { renderFooter } from "./components/footer";
 import { renderSummary } from "./components/summary";
 import {
@@ -124,14 +124,18 @@ async function main(): Promise<void> {
   const pathEntries = getLatestPathEntries(pathsData);
 
   const headerEl = document.getElementById("dashboard-header");
-  const topBarEl = document.getElementById("header-top-bar");
   if (headerEl && overview.length > 0) {
-    renderHeader(headerEl, overview[overview.length - 1], topBarEl ?? undefined);
+    renderHeader(headerEl, overview[overview.length - 1]);
   }
 
   const footerEl = document.getElementById("dashboard-footer");
   if (footerEl && overview.length > 0) {
     renderFooter(footerEl, overview[overview.length - 1].collected_at, version);
+  }
+
+  const kpiEl = document.getElementById("kpi-stats");
+  if (kpiEl && overview.length > 0) {
+    renderKPIs(kpiEl, overview[overview.length - 1]);
   }
 
   const summaryEl = document.getElementById("summary-stats");
