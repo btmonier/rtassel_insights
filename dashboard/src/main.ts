@@ -35,9 +35,12 @@ async function fetchJSON<T>(path: string): Promise<T> {
 function getLatestReferrerEntries(
   data: ReferrerSnapshot[] | ReferrersColumnar,
 ): ReferrerEntry[] {
+  const withViews = (entries: ReferrerEntry[]) =>
+    entries.filter((e) => e.count > 0);
+
   if (Array.isArray(data) && data.length > 0) {
     const last = data[data.length - 1] as ReferrerSnapshot;
-    if (last.entries) return last.entries;
+    if (last.entries) return withViews(last.entries);
   }
   if (
     data &&
@@ -49,11 +52,13 @@ function getLatestReferrerEntries(
     const col = data as ReferrersColumnar;
     if (col.snapshots.length === 0) return [];
     const [_, row] = col.snapshots[col.snapshots.length - 1];
-    return col.referrers.map((referrer, i) => ({
-      referrer,
-      count: row[i]?.[0] ?? 0,
-      uniques: row[i]?.[1] ?? 0,
-    }));
+    return withViews(
+      col.referrers.map((referrer, i) => ({
+        referrer,
+        count: row[i]?.[0] ?? 0,
+        uniques: row[i]?.[1] ?? 0,
+      })),
+    );
   }
   return [];
 }
