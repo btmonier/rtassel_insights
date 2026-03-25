@@ -61,9 +61,12 @@ function getLatestReferrerEntries(
 function getLatestPathEntries(
   data: PathSnapshot[] | PathsColumnar,
 ): PathEntry[] {
+  const withViews = (entries: PathEntry[]) =>
+    entries.filter((e) => e.count > 0);
+
   if (Array.isArray(data) && data.length > 0) {
     const last = data[data.length - 1] as PathSnapshot;
-    if (last.entries) return last.entries;
+    if (last.entries) return withViews(last.entries);
   }
   if (
     data &&
@@ -76,12 +79,14 @@ function getLatestPathEntries(
     const col = data as PathsColumnar;
     if (col.snapshots.length === 0) return [];
     const [_, row] = col.snapshots[col.snapshots.length - 1];
-    return col.paths.map((path, i) => ({
-      path,
-      title: col.titles[i] ?? "",
-      count: row[i]?.[0] ?? 0,
-      uniques: row[i]?.[1] ?? 0,
-    }));
+    return withViews(
+      col.paths.map((path, i) => ({
+        path,
+        title: col.titles[i] ?? "",
+        count: row[i]?.[0] ?? 0,
+        uniques: row[i]?.[1] ?? 0,
+      })),
+    );
   }
   return [];
 }
