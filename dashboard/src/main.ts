@@ -32,6 +32,57 @@ async function fetchJSON<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+/** Latest collection time across all dashboard JSON (overview can lag when repo stats are unchanged). */
+function latestDataTimestampMs(
+  overview: RepoOverview[],
+  views: TrafficEntry[],
+  clones: TrafficEntry[],
+  referrersData: ReferrerSnapshot[] | ReferrersColumnar,
+  pathsData: PathSnapshot[] | PathsColumnar,
+): number | null {
+  const candidates: number[] = [];
+  const push = (s: string | undefined) => {
+    if (!s) return;
+    const ms = Date.parse(s);
+    if (!Number.isNaN(ms)) candidates.push(ms);
+  };
+
+  if (overview.length > 0) {
+    push(overview[overview.length - 1].collected_at);
+  }
+  if (views.length > 0) push(views[views.length - 1].timestamp);
+  if (clones.length > 0) push(clones[clones.length - 1].timestamp);
+
+  if (Array.isArray(referrersData) && referrersData.length > 0) {
+    push((referrersData[referrersData.length - 1] as ReferrerSnapshot).collected_at);
+  } else if (
+    referrersData &&
+    typeof referrersData === "object" &&
+    "snapshots" in referrersData &&
+    Array.isArray((referrersData as ReferrersColumnar).snapshots) &&
+    (referrersData as ReferrersColumnar).snapshots.length > 0
+  ) {
+    const last = (referrersData as ReferrersColumnar).snapshots.slice(-1)[0];
+    push(last[0]);
+  }
+
+  if (Array.isArray(pathsData) && pathsData.length > 0) {
+    push((pathsData[pathsData.length - 1] as PathSnapshot).collected_at);
+  } else if (
+    pathsData &&
+    typeof pathsData === "object" &&
+    "snapshots" in pathsData &&
+    Array.isArray((pathsData as PathsColumnar).snapshots) &&
+    (pathsData as PathsColumnar).snapshots.length > 0
+  ) {
+    const last = (pathsData as PathsColumnar).snapshots.slice(-1)[0];
+    push(last[0]);
+  }
+
+  if (candidates.length === 0) return null;
+  return Math.max(...candidates);
+}
+
 function getLatestReferrerEntries(
   data: ReferrerSnapshot[] | ReferrersColumnar,
 ): ReferrerEntry[] {
@@ -139,8 +190,15 @@ async function main(): Promise<void> {
   }
 
   const footerEl = document.getElementById("dashboard-footer");
-  if (footerEl && overview.length > 0) {
-    renderFooter(footerEl, overview[overview.length - 1].collected_at, version);
+  const lastUpdatedMs = latestDataTimestampMs(
+    overview,
+    views,
+    clones,
+    referrersData,
+    pathsData,
+  );
+  if (footerEl && lastUpdatedMs !== null) {
+    renderFooter(footerEl, new Date(lastUpdatedMs).toISOString(), version);
   }
 
   const kpiEl = document.getElementById("kpi-stats");
