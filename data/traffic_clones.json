@@ -303,5 +303,15 @@
     "timestamp": "2026-04-24T00:00:00Z",
     "count": 22,
     "uniques": 15
+  },
+  {
+    "timestamp": "2026-04-25T00:00:00Z",
+    "count": 12,
+    "uniques": 8
+  },
+  {
+    "timestamp": "2026-04-26T00:00:00Z",
+    "count": 0,
+    "uniques": 0
   }
 ]
