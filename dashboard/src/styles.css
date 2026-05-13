@@ -197,17 +197,6 @@ body {
   gap: 1rem;
 }
 
-.version-badge {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: var(--color-accent);
-  background: var(--color-accent-light);
-  padding: 0.15em 0.5em;
-  border-radius: 6px;
-}
-
 .kpi-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -703,11 +692,15 @@ a.timeline-point {
   font-size: 0.875rem;
 }
 
-.footer-text code {
+#dashboard-footer code {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
   background: var(--color-accent-light);
-  padding: 0.1em 0.4em;
+  padding: 0.25rem 0.45rem;
   border-radius: 4px;
   font-size: 0.825rem;
+  color: var(--color-text-muted);
 }
 
 /* ---- Error banner ---- */

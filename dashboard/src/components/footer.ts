@@ -15,7 +15,7 @@ export function renderFooter(
     <div class="footer-inner">
       <p class="footer-text">Last updated: <code>${collected}</code></p>
       <div class="footer-right">
-        <span class="version-badge">v${version}</span>
+        <code>v${version}</code>
         <a href="${DASHBOARD_SOURCE_URL}" target="_blank" rel="noopener noreferrer" class="footer-link" title="View source code">
           <span class="mdi mdi-github"></span>
         </a>
