@@ -20,14 +20,25 @@ function getColors(): { accent: string; secondary: string } {
   };
 }
 
-function periodCutoff(period: PeriodFilter): Date | null {
+/** Start of calendar day in UTC (traffic timestamps are UTC midnight). */
+function utcDayStart(isoOrDate: string | Date): Date {
+  const d = typeof isoOrDate === "string" ? new Date(isoOrDate) : isoOrDate;
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+}
+
+function periodEndDay(data: TrafficEntry[]): Date {
+  if (data.length === 0) return utcDayStart(new Date());
+  return utcDayStart(data[data.length - 1].timestamp);
+}
+
+function periodCutoff(period: PeriodFilter, endDay: Date): Date | null {
   if (period === "max") return null;
 
-  const now = new Date();
+  if (period === "ytd") {
+    return new Date(Date.UTC(endDay.getUTCFullYear(), 0, 1));
+  }
 
-  if (period === "ytd") return new Date(now.getFullYear(), 0, 1);
-
-  const days: Record<string, number> = {
+  const inclusiveDays: Record<string, number> = {
     "1w": 7,
     "2w": 14,
     "1m": 30,
@@ -35,11 +46,11 @@ function periodCutoff(period: PeriodFilter): Date | null {
     "1y": 365,
     "5y": 1826,
   };
-  const d = days[period];
-  if (d === undefined) return null;
+  const n = inclusiveDays[period];
+  if (n === undefined) return null;
 
-  const cutoff = new Date(now);
-  cutoff.setDate(cutoff.getDate() - d);
+  const cutoff = utcDayStart(endDay);
+  cutoff.setUTCDate(cutoff.getUTCDate() - (n - 1));
   return cutoff;
 }
 
@@ -47,10 +58,14 @@ function filterByPeriod(
   data: TrafficEntry[],
   period: PeriodFilter,
 ): TrafficEntry[] {
-  const cutoff = periodCutoff(period);
+  const cutoff = periodCutoff(period, periodEndDay(data));
   if (!cutoff) return data;
 
-  return data.filter((d) => new Date(d.timestamp) >= cutoff);
+  const end = periodEndDay(data);
+  return data.filter((d) => {
+    const day = utcDayStart(d.timestamp);
+    return day >= cutoff && day <= end;
+  });
 }
 
 function cumulativeSum(values: number[]): number[] {
