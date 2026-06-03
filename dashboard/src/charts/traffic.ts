@@ -54,18 +54,59 @@ function periodCutoff(period: PeriodFilter, endDay: Date): Date | null {
   return cutoff;
 }
 
-function filterByPeriod(
+/** Inclusive list of UTC day-starts from `start` to `end`. */
+function eachUtcDay(start: Date, end: Date): Date[] {
+  const days: Date[] = [];
+  const cur = utcDayStart(start);
+  const last = utcDayStart(end);
+  while (cur.getTime() <= last.getTime()) {
+    days.push(new Date(cur));
+    cur.setUTCDate(cur.getUTCDate() + 1);
+  }
+  return days;
+}
+
+/**
+ * Returns one entry per calendar day in [start, end], inserting zero-count
+ * placeholders for days with no recorded traffic. Without this, missing days
+ * (collection gaps or genuinely zero-traffic days) silently disappear from the
+ * chart, so e.g. a "1W" view could show fewer than seven points.
+ */
+function fillDailyGaps(
+  data: TrafficEntry[],
+  start: Date,
+  end: Date,
+): TrafficEntry[] {
+  const byDay = new Map<number, TrafficEntry>();
+  for (const d of data) {
+    byDay.set(utcDayStart(d.timestamp).getTime(), d);
+  }
+  return eachUtcDay(start, end).map((day) => {
+    const existing = byDay.get(day.getTime());
+    return existing ?? { timestamp: day.toISOString(), count: 0, uniques: 0 };
+  });
+}
+
+/**
+ * Builds the continuous daily series shown for a period: the window ends at the
+ * most recent data day and spans `period` days back (clamped to the first day
+ * we actually have data for, so we never fabricate zeros from before tracking
+ * began), with internal gaps zero-filled.
+ */
+function seriesForPeriod(
   data: TrafficEntry[],
   period: PeriodFilter,
 ): TrafficEntry[] {
-  const cutoff = periodCutoff(period, periodEndDay(data));
-  if (!cutoff) return data;
+  if (data.length === 0) return [];
 
-  const end = periodEndDay(data);
-  return data.filter((d) => {
-    const day = utcDayStart(d.timestamp);
-    return day >= cutoff && day <= end;
-  });
+  const endDay = periodEndDay(data);
+  const firstDay = utcDayStart(data[0].timestamp);
+  const cutoff = periodCutoff(period, endDay);
+
+  const start =
+    cutoff && cutoff.getTime() > firstDay.getTime() ? cutoff : firstDay;
+
+  return fillDailyGaps(data, start, endDay);
 }
 
 function cumulativeSum(values: number[]): number[] {
@@ -181,7 +222,7 @@ export function createTrafficSection(
 
   function render(period: PeriodFilter): void {
     currentPeriod = period;
-    const filtered = filterByPeriod(sorted, period);
+    const filtered = seriesForPeriod(sorted, period);
     const labels = filtered.map((d) => formatDate(d.timestamp));
     const counts = filtered.map((d) => d.count);
     const uniques = filtered.map((d) => d.uniques);

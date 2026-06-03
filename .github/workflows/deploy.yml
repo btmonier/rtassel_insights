@@ -1,21 +1,28 @@
-name: Collect rTASSEL GitHub Insights
+name: Deploy rTASSEL Insights Dashboard
 
+# Deploys the dashboard to GitHub Pages independently of the data-collection
+# pipeline (collect.yml). This means dashboard code/fix changes go live as soon
+# as they land on main, instead of waiting for the next scheduled data run.
 on:
-  schedule:
-    - cron: "0 11 * * *" # daily at 11:00 UTC
+  push:
+    branches: [main]
+    paths:
+      - "dashboard/**"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
+# Shared with collect.yml so the two workflows never deploy to Pages at once.
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  collect-and-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     environment:
@@ -25,21 +32,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up pixi
-        uses: prefix-dev/setup-pixi@v0.8.1
-
-      - name: Collect all data
-        run: pixi run collect-all
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-
-      - name: Commit and push data
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "data: update rTASSEL insights [automated]"
-          file_pattern: "data/*.json"
-          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
