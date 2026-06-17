@@ -141,7 +141,7 @@ function buildChart(
           borderColor: accent,
           backgroundColor: accent + "22",
           fill,
-          tension: 0.3,
+          tension: 0,
           pointRadius: 3,
         },
         {
@@ -150,7 +150,7 @@ function buildChart(
           borderColor: secondary,
           backgroundColor: secondary + "22",
           fill,
-          tension: 0.3,
+          tension: 0,
           pointRadius: 3,
         },
       ],
