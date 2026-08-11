@@ -68,5 +68,12 @@
     "published_at": "2026-03-12T20:54:57Z",
     "html_url": "https://github.com/maize-genetics/rTASSEL/releases/tag/v0.12.0",
     "assets": []
+  },
+  {
+    "tag_name": "v0.13.0",
+    "name": "v0.13.0",
+    "published_at": "2026-08-10T20:37:20Z",
+    "html_url": "https://github.com/maize-genetics/rTASSEL/releases/tag/v0.13.0",
+    "assets": []
   }
 ]
