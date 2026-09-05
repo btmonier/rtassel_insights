@@ -963,5 +963,10 @@
     "timestamp": "2026-09-03T00:00:00Z",
     "count": 21,
     "uniques": 2
+  },
+  {
+    "timestamp": "2026-09-04T00:00:00Z",
+    "count": 6,
+    "uniques": 2
   }
 ]
